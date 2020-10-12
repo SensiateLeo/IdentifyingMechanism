@@ -50,11 +50,11 @@ elem = mecanismo.encontra_elementos()
 elementos = mecanismo.retorna_elementos()
 
 #Script que configura/ inicia o MutationObserver
-poe = open("mutation_observer.js", "r")
+poe = open("scripts/mutation_observer.js", "r")
 set_mut = poe.read()
 
 #Script que encerra o Mutation Observer
-fecha = open("fecha_mo.js", "r")
+fecha = open("scripts/fecha_mo.js", "r")
 fecha_mo = fecha.read()
 saida = open('arquivo.txt','w')
 dinamicos = 0
@@ -76,10 +76,10 @@ for i in range(elem):
     print(' ')
 
 #Script que captura os elementos que sofreram mutações
-pega = open("get_mutation.js", "r")
+pega = open("scripts/get_mutation.js", "r")
 get_mut = pega.read()
 #Script que captura o tipo das mutações identificadas
-tipo = open("get_tipos.js", "r")
+tipo = open("scripts/get_tipos.js", "r")
 tipo_mut = tipo.read()
 tipos_capt = cic.execute_script(tipo_mut) #Recupera o tipo das mutações identificadas
 targets = cic.execute_script(get_mut)  #Recupera as mutações identificadas
