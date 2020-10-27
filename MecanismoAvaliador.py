@@ -33,12 +33,11 @@ class Avaliador:
 
     def disparaClique(self, caminho):
         driver = self.driver
-        elemento = driver.find_element_by_xpath(caminho)
         try:
+            elemento = driver.find_element_by_xpath(caminho)
             elemento.click()
             sleep(0.5)
         except:
-            print("O elemento não recebe eventos de clique")
             return
 
         print("O elemento recebe eventos de clique")
@@ -59,105 +58,87 @@ class Avaliador:
         print("O elemento recebe eventos de clique")
         return
 
-    def obterPropriedadesAcessibilidade(self, caminho):
+    def obterPropriedadesAcessibilidade(self, caminho, scroll):
         driver = self.driver
+
+        js = 'scrollBy(0,' + str(scroll) + ')'
+        driver.execute_script(js)
+
         calendario = driver.find_element_by_xpath(caminho)
 
-        print("\nLocalização do elemento na página:")
+        print("\nPosição e tamanho:")
         loc = list(calendario.location.values())
         loc_x = loc[0]
         loc_y = loc[1]
-        print("Posição y: " + str(loc_y))
-        print("Posição x: " + str(loc_x) + "\n")
+        print("Posição - y: " + str(loc_y) + "; x: " + str(loc_x))
 
-        print("Tamanho do elemento na página:")
         tamanho = list(calendario.size.values())
         tam_x = tamanho[0]
         tam_y = tamanho[1]
-        print("Tamanho x: " + str(tam_x))
-        print("Tamanho y: " + str(tam_y) + "\n")
-        #arquivo.write(str(tam_x) + ',')
-        #arquivo.write(str(tam_y) + ',')
+        print("Tamanho - x: " + str(tam_x) + "; y: " + str(tam_y))
 
         # site com lista de atributos HTML: https://www.w3schools.com/tags/ref_attributes.asp
         #site com exemplo de como deve ser implementado um calendário acessível: https://www.w3.org/TR/wai-aria-practices/examples/dialog-modal/datepicker-dialog.html
-        if str(calendario.tag_name) != "":
-            print("Tag do elemento: " + str(calendario.tag_name))
+        # if str(calendario.tag_name) != "":
+        #     print("Tag do elemento: " + str(calendario.tag_name))
 
-        print("Atributos do elemento:")
-        if str(str(calendario.get_attribute('outerHTML'))):
-            print("HTML: " + str(calendario.get_attribute('outerHTML')))
+        print("\nAtributos de acessibilidade do elemento:")
+        # if str(str(calendario.get_attribute('outerHTML'))):
+        #     print("HTML: " + str(calendario.get_attribute('outerHTML')))
 
         attrs = driver.execute_script(
             'var items = {}; for (index = 0; index < arguments[0].attributes.length; ++index) { items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value }; return items;',
             calendario)
 
-        temRole = 0
+        attRole = 0
+        attAcessibilidade = 0
 
         for x, y in attrs.items():
-            print(str(x) + ': ' + '"' + str(y) + '"')
-            if (x == "role"):
-                temRole = 1
-                valorRole = str(y)
 
-        if(temRole == 1):
-            print('Elemento possui atributo "Role": ' + valorRole)
-        else:
-            print('Elemento não possui atributo "Role"')
+            #print(str(x) + ': ' + '"' + str(y) + '"')
+
+            if (x == "role"):
+                attRole = 1
+                print('Atributo "role": ' + str(y))
+
+            if("aria" in str(x)):
+                print("Atributo '" + str(x) + "': " + str(y))
+                attAcessibilidade += 1
+
+        if(attRole == 0 and attAcessibilidade == 0):
+            print("Não foram encontrados atributos de acessibilidade")
+
+        resumo = [attRole, attAcessibilidade]
+        return resumo
 
     def obterPropriedadesAcessibilidadeElementoFilho(self, calendario):
         driver = self.driver
 
-        print("\nLocalização do elemento na página:")
-        loc = list(calendario.location.values())
-        loc_x = loc[0]
-        loc_y = loc[1]
-        print("Posição y: " + str(loc_y))
-        print("Posição x: " + str(loc_x) + "\n")
-
-        print("Tamanho do elemento na página:")
-        tamanho = list(calendario.size.values())
-        tam_x = tamanho[0]
-        tam_y = tamanho[1]
-        print("Tamanho x: " + str(tam_x))
-        print("Tamanho y: " + str(tam_y) + "\n")
-        #arquivo.write(str(tam_x) + ',')
-        #arquivo.write(str(tam_y) + ',')
-
         # site com lista de atributos HTML: https://www.w3schools.com/tags/ref_attributes.asp
         #site com exemplo de como deve ser implementado um calendário acessível: https://www.w3.org/TR/wai-aria-practices/examples/dialog-modal/datepicker-dialog.html
-
-        if str(calendario.tag_name) != "":
-            print("Tag do elemento: " + str(calendario.tag_name))
-
-        print("Atributos do elemento:")
-        if str(str(calendario.get_attribute('outerHTML'))):
-            print("HTML: " + str(calendario.get_attribute('outerHTML')))
-
         attrs = driver.execute_script(
             'var items = {}; for (index = 0; index < arguments[0].attributes.length; ++index) { items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value }; return items;',
             calendario)
 
-        temRole = 0
-
+        roles = 0
+        atts = 0
         for x, y in attrs.items():
-            print(str(x) + ': ' + '"' + str(y) + '"')
+            # print(str(x) + ': ' + '"' + str(y) + '"')
             if (x == "role"):
-                temRole = 1
-                valorRole = str(y)
+                roles += 1
+                print('Atributo "role": ' + str(y))
 
-        if(temRole == 1):
-            print('Elemento possui atributo "Role": ' + valorRole)
-        else:
-            print('Elemento não possui atributo "Role"')
+            if ("aria" in str(x)):
+                print("Atributo '" + str(x) + "': " + str(y))
+                atts += 1
 
+        resumoFilho = [roles, atts]
+        return resumoFilho
 
     def encontrarElementosFilhos(self, caminho):
         driver = self.driver
         elemento = driver.find_element_by_xpath(caminho)
         filhos = elemento.find_elements_by_xpath('.//*')
-        #for child in filhos:
-            #print(child.get_attribute('outerHTML'))
         return len(filhos)
 
     def retornarElementoFilho(self, caminho):
@@ -203,17 +184,17 @@ class Avaliador:
 # base_dados =  open('dados.txt', 'a+')
 # base_dados.write('\n')
 
-scrollValor = 0
 loop = 1
 
 #Inicia pegando as informações do usuário
 #Procedimento é guiado!
 PROMPT_1 = "Digite a URL do site a ser analisado: "  # PROMPT_1 é o site
-PROMPT_2 = "Digite o Xpath (caminho) do widget a ser avaliado: "  # PROMPT_2 é o caminho do widget
-PROMPT_3 = "É necessário rolar a página para acessar o wigdet? (1 ou 0): "
-PROMPT_4 = "Quantos pixels é necessário scrollar?: "
-PROMPT_5 = "\nDeseja indicar um novo elemento para análise? (1 ou 0): "
-
+PROMPT_2 = "É necessário rolar a página para acessar o wigdet? (1 ou 0): "
+PROMPT_3 = "Quantos pixels é necessário scrollar?: "
+PROMPT_4 = "É necessário clicar em algum elemento para acessar o wigdet? (1 ou 0): "
+PROMPT_5 = "Digite o Xpath (caminho) do elemento ativador: "
+PROMPT_6 = "Digite o Xpath (caminho) do widget a ser avaliado: "
+PROMPT_7 = "\nDeseja indicar um novo elemento para análise? (1 ou 0): "
 
 site = str(input(PROMPT_1))
 
@@ -229,70 +210,54 @@ driver.get(site)
 avaliador = Avaliador(driver)
 
 while loop:
+    scrollValor = "0"
 
-    xpath = str(input(PROMPT_2))
-    scroll = input(PROMPT_3)
+    scroll = input(PROMPT_2)
 
     if (scroll == "1"):
-        scrollValor = input(PROMPT_4)
+        scrollValor = input(PROMPT_3)
+
+    elemAtivador = input(PROMPT_4)
+
+    if (elemAtivador == "1"):
+        caminhoAtivador = input(PROMPT_5)
+        avaliador.disparaClique(caminhoAtivador)
+
+    xpath = str(input(PROMPT_6))
 
     print("\nMecanismo Avaliador está executando...")
     print("Extraindo características do elemento ", xpath)
 
     #Obtém as propriedades iniciais do elemento indicado pelo usuário
-    avaliador.obterPropriedadesAcessibilidade(xpath)
+    resumoElemPai = avaliador.obterPropriedadesAcessibilidade(xpath, scrollValor)
 
-    print("Extraiu propriedades!")
-
-    #Elemento pode receber cliques?
-    if(scroll == "1"):
-        mouse = avaliador.disparaCliqueComScroll(xpath, scrollValor)
-    else:
-        mouse = avaliador.disparaClique(xpath)
+    #mouse = avaliador.disparaClique(xpath)
 
     #mecanismo.removerFoco()
 
     #Determina se o elemento possui nós filhos
     numFilhos = avaliador.encontrarElementosFilhos(xpath)
 
+    rolesFilhos = 0
+    attAcessibilidadeFilhos = 0
     #Caso existam nós filhos, armazena as propriedades numéricas desses filhos
     #Tamanho e posição, e tags "netas"
     if (numFilhos > 0):
+        print("\nAtributos acessibilidade dos elementos filhos: ")
         filhos = avaliador.retornarElementosFilhos(xpath)
         for i in range(len(filhos)):
-            avaliador.obterPropriedadesAcessibilidadeElementoFilho(filhos[i])
+            resumoElemFilho = avaliador.obterPropriedadesAcessibilidadeElementoFilho(filhos[i])
+            rolesFilhos += resumoElemFilho[0]
+            attAcessibilidadeFilhos += resumoElemFilho[1]
 
-    loop = int(input(PROMPT_5))
+    print("\nResumo de Acessibilidade:")
+    print("Elemento pai: \nAtt role = " + str(resumoElemPai[0]) + "\nAtts Acessibilidade: " + str(resumoElemPai[1]))
+    print("\nElementos filhos: \nAtt role = " + str(rolesFilhos) + "\nAtts Acessibilidade: " + str(attAcessibilidadeFilhos))
 
-    #Analisa se o elemento é dinâmico através de uma interação com o mesmo
-    #Ou seja, verifica se a interação insere novos nós na DOM dinamicamente
-    # dinamico = 0
-    # elem = mecanismo.encontrarElementosPagina()
-    # mecanismo.disparaClique(xpath)
-    # num_elem = mecanismo.encontrarElementosPagina()
-
-    #Se o elemento for dinâmico, são extraídas as propriedades desse novo elemento da DOM
-    #Pega- se a posição e tamanho e o número de tags dos nós netos, bisnetos, etc...
-    # if (num_elem > elem):
-    #     dinamico = 1
-    #     base_dados.write(str(dinamico) + ',')
-    #     elementos = mecanismo.retornarElementosPagina()
-    #     mecanismo.obterPropriedadesNumericas(elementos[elem], base_dados)
-    #     num_elem = elem
-    #Caso a interação não insira novos elementos na DOM, o elemento é marcado como não dinâmico
-    #e seu número de nós netos é marcado como 0
-    # else:
-    #     for i in range(22):
-    #         base_dados.write(str(0)+',')
-    # sleep(2)
+    loop = int(input(PROMPT_7))
 
 #Encerra o mecanismo
 driver.quit()
+print("\nAvaliação de características finalizada.")
 
-#Fecha o arquivo da base
-# base_dados.close()
-
-print("\n")
-print("Extração de características finalizada.")
-#print("\nOs dados foram armazenado em dados.txt")
 

@@ -1,0 +1,31 @@
+- Demos/ frameworks
+https://www.w3.org/TR/wai-aria-practices/examples/dialog-modal/datepicker-dialog.html
+https://dequeuniversity.com/library/aria/date-picker
+https://jqueryui.com/datepicker/
+https://uxsolutions.github.io/bootstrap-datepicker/?markup=input&format=&weekStart=&startDate=&endDate=&startView=0&minViewMode=0&maxViewMode=4&todayBtn=false&clearBtn=false&language=en&orientation=auto&multidate=&multidateSeparator=&keyboardNavigation=on&forceParse=on#sandbox
+https://fengyuanchen.github.io/datepicker/
+https://eonasdan.github.io/bootstrap-datetimepicker/
+https://demos.jquerymobile.com/1.4.0/datepicker/
+https://simpleisbetterthancomplex.com/tutorial/2019/01/03/how-to-use-date-picker-with-django.html
+https://gijgo.com/datepicker/example/bootstrap-4
+https://mdbootstrap.com/docs/jquery/forms/date-picker/
+https://bootstrapious.com/p/bootstrap-datepicker
+https://freefrontend.com/bootstrap-datepickers-timepickers/
+https://form.jotform.com/80385150584963
+https://surveyjs.io/Examples/Library/?id=custom-widget-datepicker&platform=jQuery&theme=modern
+https://calendar.google.com/calendar/u/0/r
+
+- Calendários acessíveis
+http://whatsock.com/tsg/Coding%20Arena/ARIA%20Date%20Pickers/ARIA%20Date%20Picker%20%28Basic%29/demo.htm
+https://dequeuniversity.com/library/aria/date-picker
+http://accessibility.athena-ict.com/aria/examples/datepicker2.shtml
+https://hanshillen.github.io/jqtest/#goto_datepicker
+https://assets.cms.gov/resources/framework/2.0/Pages/datepicker.html
+http://haltersweb.github.io/Accessibility/date-picker.html
+https://fymmot.github.io/inclusive-dates/
+http://eureka2.github.io/ab-datepicker/
+
+- 
+
+- Sites/ Páginas públicas
+
